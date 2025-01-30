@@ -67,6 +67,36 @@ def get_weather_data(month, year):
         print(f"Error scraping data for {month} {year}: {str(e)}")
         return None
 
+# def clean_data(df):
+#     """
+#     Clean and format the scraped data
+#     """
+#     if df is None or df.empty:
+#         return None
+    
+#     # Rename columns to remove spaces and standardize names
+#     df.columns = [col.replace(' ', '_').lower() for col in df.columns]
+    
+#     # Parse the time column which is already in YYYY-MM-DD format
+#     if 'time' in df.columns:
+#         try:
+#             df['time'] = pd.to_datetime(df['time'], format='%Y-%m-%d')
+#         except Exception as e:
+#             print(f"Error converting time column to datetime: {e}")
+#             return None
+    
+#     # Remove any °C, %, km/h, etc. from values and convert to numeric
+#     numeric_columns = ['temperature', 'dew_point', 'humidity', 'wind_speed', 'pressure', 'precipitation']
+#     for col in numeric_columns:
+#         if col in df.columns:
+#             # Keep original value in new column
+#             df[f'{col}_raw'] = df[col]
+#             # Extract numeric value
+#             df[col] = df[col].str.extract(r'([-\d.]+)').astype(float)
+    
+#     return df
+
+
 def clean_data(df):
     """
     Clean and format the scraped data
@@ -74,16 +104,31 @@ def clean_data(df):
     if df is None or df.empty:
         return None
     
+    # Create a copy of the dataframe
+    df = df.copy()
+    
     # Rename columns to remove spaces and standardize names
     df.columns = [col.replace(' ', '_').lower() for col in df.columns]
     
-    # Parse the time column which is already in YYYY-MM-DD format
-    if 'time' in df.columns:
-        try:
-            df['time'] = pd.to_datetime(df['time'], format='%Y-%m-%d')
-        except Exception as e:
-            print(f"Error converting time column to datetime: {e}")
-            return None
+    # Convert month names to month numbers
+    month_map = {
+        'January': 1, 'February': 2, 'March': 3, 'April': 4,
+        'May': 5, 'June': 6, 'July': 7, 'August': 8,
+        'September': 9, 'October': 10, 'November': 11, 'December': 12
+    }
+    df['month_num'] = df['month'].map(month_map)
+    
+    # Construct datetime from components
+    try:
+        # df['time'] = pd.to_datetime(
+        #     df['year'].astype(str) + '-' + 
+        #     df['month_num'].astype(str).str.zfill(2) + '-' + 
+        #     df['time'].astype(str).str.zfill(2)
+        # )
+        df['time'] = pd.to_datetime(df['time'], format='%Y-%m-%d', errors='coerce')
+    except Exception as e:
+        print(f"Error converting to datetime: {e}")
+        return None
     
     # Remove any °C, %, km/h, etc. from values and convert to numeric
     numeric_columns = ['temperature', 'dew_point', 'humidity', 'wind_speed', 'pressure', 'precipitation']
@@ -94,14 +139,17 @@ def clean_data(df):
             # Extract numeric value
             df[col] = df[col].str.extract(r'([-\d.]+)').astype(float)
     
+    # Drop intermediate columns
+    df = df.drop(['month_num'], axis=1)
+    
     return df
 
 def main():
     # Define months and years
-    # months = ['January', 'February', 'March', 'April', 'May', 'June', 
-    #           'July', 'August', 'September', 'October', 'November', 'December']
-    years = range(2010, 2011)  # 2010 to 2020
-    months = ['January', 'February']
+    months = ['January', 'February', 'March', 'April', 'May', 'June', 
+              'July', 'August', 'September', 'October', 'November', 'December']
+    years = range(2010, 2021)  # 2010 to 2020
+    # months = ['January', 'February']
     
     # Initialize empty list to store all data
     all_data = []
