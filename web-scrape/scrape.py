@@ -67,34 +67,6 @@ def get_weather_data(month, year):
         print(f"Error scraping data for {month} {year}: {str(e)}")
         return None
 
-# def clean_data(df):
-#     """
-#     Clean and format the scraped data
-#     """
-#     if df is None or df.empty:
-#         return None
-    
-#     # Rename columns to remove spaces and standardize names
-#     df.columns = [col.replace(' ', '_').lower() for col in df.columns]
-    
-#     # Parse the time column which is already in YYYY-MM-DD format
-#     if 'time' in df.columns:
-#         try:
-#             df['time'] = pd.to_datetime(df['time'], format='%Y-%m-%d')
-#         except Exception as e:
-#             print(f"Error converting time column to datetime: {e}")
-#             return None
-    
-#     # Remove any °C, %, km/h, etc. from values and convert to numeric
-#     numeric_columns = ['temperature', 'dew_point', 'humidity', 'wind_speed', 'pressure', 'precipitation']
-#     for col in numeric_columns:
-#         if col in df.columns:
-#             # Keep original value in new column
-#             df[f'{col}_raw'] = df[col]
-#             # Extract numeric value
-#             df[col] = df[col].str.extract(r'([-\d.]+)').astype(float)
-    
-#     return df
 
 
 def clean_data(df):
@@ -149,7 +121,7 @@ def main():
     months = ['January', 'February', 'March', 'April', 'May', 'June', 
               'July', 'August', 'September', 'October', 'November', 'December']
     years = range(2010, 2021)  # 2010 to 2020
-    # months = ['January', 'February']
+    # months = ['January', 'February', 'March']
     
     # Initialize empty list to store all data
     all_data = []
@@ -179,7 +151,7 @@ def main():
         final_df = final_df.sort_values('time')
         
         # Select and reorder columns
-        columns = ['time', 'month', 'year', 'temperature', 'dew_point', 
+        columns = ['time', 'temperature', 'dew_point', 
                   'humidity', 'wind_speed', 'pressure', 'precipitation']
         
         # Add raw columns if they exist
@@ -191,7 +163,7 @@ def main():
         final_df = final_df[existing_columns]
         
         # Save to CSV
-        output_file = 'baringo_weather_data_2010_2020.csv'
+        output_file = '5-baringo_weather_data_2010_2020.csv'
         final_df.to_csv(output_file, index=False)
         print(f"Data successfully scraped and saved to {output_file}!")
         
