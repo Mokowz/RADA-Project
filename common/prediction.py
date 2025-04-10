@@ -4,14 +4,16 @@ import tensorflow as tf
 import joblib
 from .weather_fetcher import fetch_weather_data
 from datetime import datetime, timedelta
+from celery import Celery
+
+
+# Set up Celery
+app = Celery()
 
 
 # Load models
 flood_model = tf.keras.models.load_model('models/lstm_flood_model.keras')
 drought_model = tf.keras.models.load_model('models/lstm_drought_model.keras')
-
-# flood_scaler = tf.keras.models.load_model('../flood_scaler.pkl')
-# drought_scaler = tf.keras.models.load_model('../drought_scaler.pkl')
 
 flood_scaler = joblib.load('flood_scaler.pkl')
 drought_scaler = joblib.load('drought_scaler.pkl')
@@ -125,6 +127,7 @@ def predict_drought():
 
     return results
 
+@app.task()
 def predict_all():
     flood_pred = predict_flood()
     drought_pred = predict_drought()
