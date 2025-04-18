@@ -6,6 +6,7 @@ from .managers import UserManager
 
 # Create your models here.
 class User(PermissionsMixin, AbstractBaseUser):
+    # username = None
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=50, null=False, blank=False)
     last_name = models.CharField(max_length=50, null=False, blank=False)
@@ -14,7 +15,8 @@ class User(PermissionsMixin, AbstractBaseUser):
     date_joined = models.DateTimeField(default=timezone.now)
     
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    # REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = []
     
     objects = UserManager()
     

@@ -16,11 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from oauth2_provider import urls as oauth2_urls
+
+from .views import GoogleLogin
+from users.views import CustomRegisterView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('common.urls')),
-    path('o/', include(oauth2_urls)),
-    path('accounts/', include('allauth.urls')),
+    # path('o/', include(oauth2_urls)),
+    # path('accounts/', include('allauth.urls')),
+    path('auth/', include('dj_rest_auth.urls')),
+    path("auth/registration/", CustomRegisterView.as_view(), name="custom_register"),
+    path('auth/google/', GoogleLogin.as_view(), name='google-login'),
 ]
