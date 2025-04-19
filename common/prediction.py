@@ -3,12 +3,15 @@ import pandas as pd
 import tensorflow as tf
 import joblib
 from .weather_fetcher import fetch_weather_data
+from common.alerts_emails import send_combined_alert_email
 from datetime import datetime, timedelta
 from celery import Celery
 
 
+FLOOD_THRESHOLD = 70
+DROUGHT_THRESHOLD = 70
 # Set up Celery
-app = Celery()
+# app = Celery()
 
 
 # Load models
@@ -127,9 +130,21 @@ def predict_drought():
 
     return results
 
-@app.task()
+# @app.task()
 def predict_all():
     flood_pred = predict_flood()
     drought_pred = predict_drought()
+
+    # Check flood risks above threshold
+    flood_risks = [(item['date'], item['flood_probability']) for item in flood_pred if item['flood_probability'] > FLOOD_THRESHOLD]
+
+    # Check drought risks above threshold
+    drought_risks = [(item['date'], item['drought_probability']) for item in drought_pred if item['drought_probability'] > DROUGHT_THRESHOLD]
+
+    if flood_risks or drought_risks:
+        send_combined_alert_email(flood_risks, drought_risks)
+
+    return {"flood": flood_pred, "drought": drought_pred}
     
     return flood_pred, drought_pred
+
