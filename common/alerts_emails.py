@@ -1,7 +1,9 @@
 from django.core.mail import send_mail
-from users.models import User
+
 
 def send_combined_alert_email(flood_risks, drought_risks):
+    from users.models import User
+    
     subject = "⚠️ Flood & Drought Risk Alert for Baringo County"
     lines = ["Dear Resident,\n"]
     

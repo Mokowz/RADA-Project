@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-t&q9ay0r6m5^-)3^5z+y25z%s2f3j5+y7=gnecg#k-=%$5b(+y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles', # required for serving swagger ui's css/js files
     'common',
     # 'oauth2_provider',
     'users',
@@ -53,6 +53,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'dj_rest_auth.registration',
+
+    'drf_yasg',
+    'django_celery_beat',
 ]
 
 SITE_ID = 1
@@ -201,3 +204,10 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER='ronniemokaya30@gmail.com'
 EMAIL_HOST_PASSWORD=os.getenv('EMAIL_PASS')
+
+# Celery
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE

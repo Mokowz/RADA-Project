@@ -11,7 +11,7 @@ User = get_user_model()
 @receiver(post_save, sender=User)
 def registration_email_confirmation(sender, instance, created, **kwargs):
     if created:        
-        subject = "Welcome to Baringo’s Early Alert System"
+        subject = "Welcome to RADA Early Alert System"
         msg = """
 Hi,
 

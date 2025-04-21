@@ -5,14 +5,11 @@ import joblib
 from .weather_fetcher import fetch_weather_data
 from common.alerts_emails import send_combined_alert_email
 from datetime import datetime, timedelta
-from celery import Celery
+from celery import shared_task
 
 
 FLOOD_THRESHOLD = 70
 DROUGHT_THRESHOLD = 70
-# Set up Celery
-# app = Celery()
-
 
 # Load models
 flood_model = tf.keras.models.load_model('models/lstm_flood_model.keras')
@@ -30,12 +27,22 @@ num_future_days = 7
 
 
 def predict_flood():
+    import tensorflow as tf
+    import joblib
+
+    print("FETCH WEATHER DATA FOR FLOOD HAS BEGUN\n")
     df = fetch_weather_data()
+
+    flood_model = tf.keras.models.load_model('models/lstm_flood_model.keras')
+    flood_scaler = joblib.load('flood_scaler.pkl')
+    kmeans = joblib.load("models/kmeans_model.pkl")
 
     # Cluster the data
     df["region_id"] = kmeans.predict(df[features])
 
     print(df)
+
+    print("FETCH WEATHER DATA AND CLUSTERING FOR FLOOD HAS COMPLETED\n")
 
     # Store original date column before transformation
     date_col = df["date"].copy()
@@ -61,12 +68,16 @@ def predict_flood():
     results = []
     for i in range(num_future_days):  # 7 days ahead
         # Predict the next day (flood probability)
+        print("FLOOD PREDICTION HAS BEGUN\n")
+
         predictions = flood_model.predict(X_inputs)
         flood_prob = round(float(predictions[0][0]) * 100, 2)  # Convert to percentage
+        
+        print("FLOOD PREDICTION HAS COMPLETED\n")
 
         # Store prediction for the current day
         results.append({
-            "date": str(forecast_dates[0] + timedelta(days=i)),
+            "date": (forecast_dates[0] + timedelta(days=i)).date().isoformat(),
             "flood_probability": flood_prob
         })
 
@@ -81,12 +92,23 @@ def predict_flood():
 
 
 def predict_drought():
+    import tensorflow as tf
+    import joblib
+
+    print("FETCH WEATHER DATA FOR DROUGHT HAS BEGUN\n")
+
     df = fetch_weather_data()
+
+    drought_model = tf.keras.models.load_model('models/lstm_drought_model.keras')
+    drought_scaler = joblib.load('drought_scaler.pkl')
+    kmeans = joblib.load("models/kmeans_model.pkl")
 
     # Cluster the data
     df["region_id"] = kmeans.predict(df[features])
 
     print(df)
+    print("FETCH WEATHER DATA AND CLUSTERING FOR DROUGHT HAS COMPLETED\n")
+
 
     # Store original date column before transformation
     date_col = df["date"].copy()
@@ -117,7 +139,8 @@ def predict_drought():
 
         # Store prediction for the current day
         results.append({
-            "date": str(forecast_dates[0] + timedelta(days=i)),
+            # "date": str(forecast_dates[0] + timedelta(days=i)),
+            "date": (forecast_dates[0] + timedelta(days=i)).date().isoformat(),
             "drought_probability": drought_prob
         })
 
@@ -130,10 +153,29 @@ def predict_drought():
 
     return results
 
-# @app.task()
+@shared_task
 def predict_all():
+    from .models import Predictions
+
+    print("Running PREDICTIONS...\n")
     flood_pred = predict_flood()
     drought_pred = predict_drought()
+
+    print(f"Flood Predictions: {flood_pred}")
+    print(f"Drought Predictions: {drought_pred}")
+
+    for f, d in zip(flood_pred, drought_pred):
+        date = f['date']
+        flood = f['flood_probability']
+        drought = d['drought_probability']
+
+        Predictions.objects.update_or_create(
+            date = date,
+            defaults = {
+                "flood_probability": flood,
+                "drought_probability": drought,
+            }
+        )
 
     # Check flood risks above threshold
     flood_risks = [(item['date'], item['flood_probability']) for item in flood_pred if item['flood_probability'] > FLOOD_THRESHOLD]
@@ -144,7 +186,10 @@ def predict_all():
     if flood_risks or drought_risks:
         send_combined_alert_email(flood_risks, drought_risks)
 
-    return {"flood": flood_pred, "drought": drought_pred}
-    
-    return flood_pred, drought_pred
+    # return {"flood": flood_pred, "drought": drought_pred}
+    return "\nPREDICTIONS COMPLETED\n"
 
+@shared_task
+def test_celery():
+    print("✅ Celery is working!")
+    return "Celery ran successfully"
