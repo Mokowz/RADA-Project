@@ -2,3 +2,5 @@ venv/
 env.sh
 **/__pycache__/
 **/migrations/
+rada_key.pem
+static/

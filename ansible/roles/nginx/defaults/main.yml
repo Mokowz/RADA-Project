@@ -1,0 +1,3 @@
+nginx_sites_config_path: /etc/nginx/sites-available/rada
+server_ip: 20.164.20.124
+static_path: /var/www/rada/staticfiles

@@ -1,0 +1,24 @@
+---
+- name: Create systemd socket
+  template:
+    dest: /etc/systemd/system/gunicorn.socket
+    src: gunicorn.socket
+    dest: "{{ gunicorn_socket_path }}"
+  become: yes
+
+
+- name: Create service file
+  template:
+    src: gunicorn.service
+    dest: "{{ gunicorn_service_path }}"
+  become: yes
+
+- name: Restart Gunicorn socket
+  shell: |
+    sudo systemctl start gunicorn.socket
+    sudo systemctl enable gunicorn.socket
+
+- name: Reload Daemon
+  shell: |
+    sudo systemctl daemon-reload
+    sudo systemctl restart gunicorn

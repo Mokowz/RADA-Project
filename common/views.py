@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.utils import timezone
+from datetime import timedelta
 
 from .prediction import predict_flood, predict_drought, predict_all
 from .models import Predictions
@@ -28,9 +30,15 @@ def get_flood_predictions(request):
 
 @api_view(['GET'])
 def show_predictions(request):
-    preds = Predictions.objects.order_by('date')
-    serializer = PredictionSerializer(preds, many=True)
+    today = timezone.localdate()
+    end_date = today + timedelta(days=6)
 
+    preds = Predictions.objects.filter(
+        date__gte=today,
+        date__lte=end_date
+    ).order_by('date')
+
+    serializer = PredictionSerializer(preds, many=True)
     return Response(serializer.data)
 
 

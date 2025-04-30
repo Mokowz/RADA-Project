@@ -1,0 +1,23 @@
+---
+- name: Install nginx
+  apt:
+    name: nginx
+    state: latest
+    update_cache: yes
+  become: yes
+
+- name: Configure Nginx for Rada
+  template:
+    src: nginx.conf
+    dest: "{{ nginx_sites_config_path }}"
+  become: yes
+
+- name: Link configuration to sites enabled
+  shell: |
+    sudo ln -s {{ nginx_sites_config_path }} /etc/nginx/sites-enabled
+
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted
+  become: yes

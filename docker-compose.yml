@@ -1,0 +1,69 @@
+services:
+  web:
+    build: .
+    image: rada-img:local
+    ports:
+      - "8000:8000"
+    command: ["/bin/bash", "run_django.sh"]
+    depends_on:
+      - db
+    volumes:
+      - .:/app/final/rada
+      - /var/www/rada/staticfiles:/app/final/rada/static
+    environment:
+      - CELERY_BROKER_URL='redis://redis:6379/0'
+      - CELERY_RESULT_BACKEND='redis://redis:6379/0'
+    restart: unless-stopped
+  
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      # DB_NAME: "radadb"
+      # DB_PASS: "password"
+      # DB_USER: "ronny"
+      - POSTGRES_USER=ronny
+      - POSTGRES_PASS=password
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=radadb
+    volumes:
+      - db-data:/var/lib/postgresql/db
+    restart: unless-stopped
+
+  celery:
+    # build: .
+    image: rada-img:local
+    command: celery -A core.mycelery worker -l info --pool=solo
+    volumes:
+      - .:/app/final/rada
+    depends_on:
+      - web
+      - db
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    restart: unless-stopped
+  
+  celery_beat:
+    # build: .
+    image: rada-img:local
+    command: celery -A core.mycelery beat -l info
+    depends_on:
+      - redis
+      - web
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    restart: unless-stopped
+
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+volumes:
+  db-data:
+  staticfiles_volume:
