@@ -13,5 +13,8 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 COPY . .
+RUN chmod +x ./wait-for-migrations.sh
+# COPY wait-for-migrations.sh /usr/bin/wait-for-migrations.sh
+
 
 # ENTRYPOINT [ "/bin/bash", "run_django.sh" ]

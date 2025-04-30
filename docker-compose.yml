@@ -27,6 +27,7 @@ services:
       - POSTGRES_PASS=password
       - POSTGRES_HOST_AUTH_METHOD=trust
       - POSTGRES_DB=radadb
+      - POSTGRES_HOST=db
     volumes:
       - db-data:/var/lib/postgresql/db
     restart: unless-stopped
@@ -34,27 +35,41 @@ services:
   celery:
     # build: .
     image: rada-img:local
+    # command: ./wait-for-migrations.sh celery -A core.mycelery worker -l info --pool=solo
     command: celery -A core.mycelery worker -l info --pool=solo
     volumes:
       - .:/app/final/rada
     depends_on:
       - web
       - db
+      - redis
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - POSTGRES_USER=ronny
+      - POSTGRES_PASS=password
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=radadb
+      - POSTGRES_HOST=db
     restart: unless-stopped
   
   celery_beat:
     # build: .
     image: rada-img:local
+    # command: ./wait-for-migrations.sh celery -A core.mycelery beat -l info
     command: celery -A core.mycelery beat -l info
     depends_on:
       - redis
       - web
+      - db
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - POSTGRES_USER=ronny
+      - POSTGRES_PASS=password
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=radadb
+      - POSTGRES_HOST=db
     restart: unless-stopped
 
 
