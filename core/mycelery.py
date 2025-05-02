@@ -16,7 +16,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'run-preds-daily-midnight': {
         'task': 'common.prediction.predict_all',
-        'schedule': crontab(hour=0, minute=0, day_of_week=[0,1,2,3,4,5,6])
-        # 'schedule': crontab(minute='*/2')
+        # 'schedule': crontab(hour=0, minute=0, day_of_week=[0,1,2,3,4,5,6])
+        'schedule': crontab(minute='*/10')
     }
 }

@@ -24,6 +24,7 @@ dj-rest-auth==7.0.1
 Django==5.2
 django-allauth==65.7.0
 django-celery-beat==2.8.0
+django-cors-headers==4.7.0
 django-timezone-field==7.1
 djangorestframework==3.16.0
 docutils==0.21.2
@@ -95,10 +96,10 @@ six==1.17.0
 soupsieve==2.6
 sqlparse==0.5.3
 stack-data==0.6.3
-# tensorboard==2.19.0
-# tensorboard-data-server==0.7.2
-# tensorflow==2.19.0
-# tensorflow-io-gcs-filesystem==0.37.1
+tensorboard==2.19.0
+tensorboard-data-server==0.7.2
+tensorflow==2.19.0
+tensorflow-io-gcs-filesystem==0.37.1
 tensorflow_cpu==2.19.0
 termcolor==3.0.1
 threadpoolctl==3.6.0

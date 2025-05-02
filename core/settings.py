@@ -58,11 +58,13 @@ INSTALLED_APPS = [
 
     'drf_yasg',
     'django_celery_beat',
+    'corsheaders',
 ]
 
 SITE_ID = 1
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     # 'oauth2_provider.middleware.OAuth2TokenMiddleware',
@@ -218,3 +220,6 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_BEAT_SCHEDULER='django_celery_beat.schedulers:DatabaseScheduler'
+
+# CORS
+CORS_ALLOW_ALL_ORIGINS = True
