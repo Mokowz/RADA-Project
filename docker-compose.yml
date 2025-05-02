@@ -13,12 +13,16 @@ services:
     environment:
       - CELERY_BROKER_URL='redis://redis:6379/0'
       - CELERY_RESULT_BACKEND='redis://redis:6379/0'
+      - POSTGRES_HOST=db
+      - EMAIL_PASS=dpsiyvecvuecxifq
+    env_file:
+      - ./new.env
     restart: unless-stopped
   
   db:
     image: postgres
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     environment:
       # DB_NAME: "radadb"
       # DB_PASS: "password"
