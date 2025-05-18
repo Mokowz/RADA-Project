@@ -76,6 +76,18 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
 ]
 
+# CORS
+# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "https://88-rada.vercel.app",
+    "https://ec2-54-160-56-208.compute-1.amazonaws.com",
+    "http://54.160.56.208",
+    "http://18.211.204.82",
+]
+
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
@@ -221,5 +233,4 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_BEAT_SCHEDULER='django_celery_beat.schedulers:DatabaseScheduler'
 
-# CORS
-CORS_ALLOW_ALL_ORIGINS = True
+

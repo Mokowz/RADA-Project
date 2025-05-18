@@ -3,4 +3,7 @@ env.sh
 **/__pycache__/
 **/migrations/
 rada_key.pem
+aws-login.pem
 static/
+ansible/hosts
+ansible/ansible.cfg

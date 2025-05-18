@@ -10,7 +10,7 @@ def get_weather_data(month, year):
     Scrape weather data for a specific month and year
     """
     # Format the URL
-    base_url = "https://weatherandclimate.com/kisii"
+    base_url = "https://weatherandclimate.com/baringo"
     url = f"{base_url}/{month.lower()}-{year}"
     
     try:
@@ -166,7 +166,7 @@ def main():
         final_df = final_df[existing_columns]
         
         # Save to CSV
-        output_file = 'weather-data-csv/kisii_weather_data_2010_2020.csv'
+        output_file = 'weather-data-csv/baringo_weather_data_2010_2024.csv'
         final_df.to_csv(output_file, index=False)
         print(f"Data successfully scraped and saved to {output_file}!")
         
