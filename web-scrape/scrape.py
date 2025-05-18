@@ -10,7 +10,7 @@ def get_weather_data(month, year):
     Scrape weather data for a specific month and year
     """
     # Format the URL
-    base_url = "https://weatherandclimate.com/baringo"
+    base_url = "https://weatherandclimate.com/turkana"
     url = f"{base_url}/{month.lower()}-{year}"
     
     try:
@@ -92,11 +92,6 @@ def clean_data(df):
     
     # Construct datetime from components
     try:
-        # df['time'] = pd.to_datetime(
-        #     df['year'].astype(str) + '-' + 
-        #     df['month_num'].astype(str).str.zfill(2) + '-' + 
-        #     df['time'].astype(str).str.zfill(2)
-        # )
         df['time'] = pd.to_datetime(df['time'], format='%Y-%m-%d', errors='coerce')
     except Exception as e:
         print(f"Error converting to datetime: {e}")
