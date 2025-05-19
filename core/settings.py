@@ -84,7 +84,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:8080",
     "https://88-rada.vercel.app",
-    "https://ec2-54-160-56-208.compute-1.amazonaws.com",
+    "https://rada-frontend.vercel.app",
     "http://54.160.56.208",
     "http://18.211.204.82",
 ]
