@@ -8,7 +8,12 @@ class UserManager(BaseUserManager):
         
         if not email:
             raise ValueError("The email must be set")
+        
         email = self.normalize_email(email)
+
+        if not email.endswith('@gmail.com'):
+            raise ValueError("Only @gmail.com email addresses are allowed for registration.")
+
         is_staff = extra_fields.pop('is_staff', False)
         is_active = extra_fields.pop('is_active', True)
         is_superuser = extra_fields.pop('is_superuser', False)
