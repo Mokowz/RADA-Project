@@ -80,13 +80,10 @@ MIDDLEWARE = [
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://localhost:3000/",
     "http://localhost:3001",
-    "http://localhost:3001/",
     "http://localhost:8080",
     "http://127.0.0.1:8080",
     "https://88-rada.vercel.app",
-    "https://88-rada.vercel.app/",
     # "https://rada-frontend.vercel.app",
     "http://54.160.56.208",
     "http://18.211.204.82",
