@@ -139,7 +139,6 @@ def predict_drought():
 
         # Store prediction for the current day
         results.append({
-            # "date": str(forecast_dates[0] + timedelta(days=i)),
             "date": (forecast_dates[0] + timedelta(days=i)).date().isoformat(),
             "drought_probability": drought_prob
         })
@@ -186,7 +185,7 @@ def predict_all():
     if flood_risks or drought_risks:
         send_combined_alert_email(flood_risks, drought_risks)
 
-    # return {"flood": flood_pred, "drought": drought_pred}
+
     return "\nPREDICTIONS COMPLETED\n"
 
 @shared_task

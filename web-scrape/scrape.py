@@ -117,10 +117,6 @@ def main():
               'July', 'August', 'September', 'October', 'November', 'December']
     years = range(2010, 2021)  # 2010 to 2020
     
-    # Testing only
-    # months = ['January', 'February', 'March']
-    # years = range(2010, 2011)  # 2010 to 2020
-    
     # Initialize empty list to store all data
     all_data = []
     
