@@ -1,0 +1,15 @@
+[Unit]
+Description=Rada Docker Compose Application
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+WorkingDirectory=/home/ubuntu/rada
+ExecStart=/usr/bin/docker compose up --build
+ExecStop=/usr/bin/docker compose down
+Restart=always
+RestartSec=10
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target
