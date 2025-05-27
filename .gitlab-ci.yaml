@@ -1,0 +1,13 @@
+stages:
+  - build
+  - test
+
+job1.build:
+  stage: build
+  script:
+    - echo "Run a script on the build stage"
+
+job2.test:
+  stage: test
+  script:
+    - echo "I am now running on the test stage"
